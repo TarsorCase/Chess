@@ -11,6 +11,7 @@ class Board:
     def __init__(self):
         self.squares = [[0, 0, 0, 0, 0, 0, 0, 0] for col in range(COLS)]
         self.last_move = None
+        self.next_player = 'white'  # Inicializar el siguiente jugador como blanco
         self._create()
         self._add_pieces('white')
         self._add_pieces('black')
@@ -59,6 +60,16 @@ class Board:
 
     def valid_move(self, piece, move):
         return move in piece.moves
+
+    def legal_moves(self):
+        legal_moves = []
+        for row in range(ROWS):
+            for col in range(COLS):
+                piece = self.squares[row][col].piece
+                if piece is not None and piece.color == self.next_player:
+                    self.calc_moves(piece, row, col)
+                    legal_moves.extend(piece.moves)
+        return legal_moves
 
     def check_promotion(self, piece, final):
         if final.row == 0 or final.row == 7:
